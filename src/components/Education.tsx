@@ -9,7 +9,7 @@ export function Education() {
           <SectionHeader
             kicker="06 · Education"
             title="Education & credentials"
-            intro="Computer Science at UET Lahore, plus the certificates that sit with the work."
+            intro="Computer Science at UET Lahore, plus certifications and competitions."
           />
         </FadeIn>
         <div className="mt-8">
@@ -31,12 +31,12 @@ export function Education() {
         </div>
 
         <div className="mt-10">
-          <p className="kicker">Certificates</p>
+          <p className="kicker">Certifications & Achievements</p>
           <div className="mt-3">
             {achievements.map((a) => (
               <article
                 key={a.title}
-                className="grid gap-1 border-b border-white/10 py-3.5 md:grid-cols-[7.5rem_1fr_auto] md:items-baseline md:gap-6"
+                className="grid gap-1 border-b border-white/10 py-3.5 md:grid-cols-[8.5rem_1fr_auto] md:items-baseline md:gap-6"
               >
                 <p className="font-mono text-[10px] tracking-wide text-mute uppercase">{a.kind}</p>
                 <h3 className="text-[0.98rem] font-medium tracking-tight">{a.title}</h3>

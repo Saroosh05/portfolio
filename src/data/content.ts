@@ -30,7 +30,7 @@ export const nav = [
 ] as const
 
 export const stats = [
-  { value: "10+", label: "Selected projects" },
+  { value: "5", label: "Credentials" },
   { value: "3", label: "Professional roles" },
   { value: "2", label: "Research papers" },
   { value: "3+", label: "Years building" },
@@ -449,6 +449,16 @@ export const achievements = [
     title: "MongoDB Certification",
     org: "Great Learning",
     kind: "Certification",
+  },
+  {
+    title: "ITEC 2024",
+    org: "Quiz Competition Participant",
+    kind: "Achievement",
+  },
+  {
+    title: "Codex Competition",
+    org: "Problem Solving Competition",
+    kind: "Achievement",
   },
 ]
 

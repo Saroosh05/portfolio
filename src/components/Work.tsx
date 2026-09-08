@@ -27,13 +27,14 @@ export function Work() {
     const el = rail.current
     if (!el) return
     const onWheel = (e: WheelEvent) => {
+      if (e.shiftKey) {
+        el.scrollLeft += e.deltaY
+        e.preventDefault()
+        return
+      }
       if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return
-      const max = el.scrollWidth - el.clientWidth
-      const atEnd = e.deltaY > 0 && el.scrollLeft >= max - 1
-      const atStart = e.deltaY < 0 && el.scrollLeft <= 1
-      if (atEnd || atStart) return
-      el.scrollLeft += e.deltaY
       e.preventDefault()
+      window.scrollBy({ top: e.deltaY })
     }
     el.addEventListener("wheel", onWheel, { passive: false })
     return () => el.removeEventListener("wheel", onWheel)
@@ -67,8 +68,8 @@ export function Work() {
         <FadeIn>
           <SectionHeader
             kicker="02 · Work"
-            title="Selected work"
-            intro="Ten projects across web, Android, and AI. Scroll across, then open a card for the stack and what it does."
+            title="A selection of the work"
+            intro="A few projects from a larger body of work across web, Android, and AI. Open a card for the stack and what it does."
           />
         </FadeIn>
 
@@ -91,7 +92,7 @@ export function Work() {
         </div>
 
         <div ref={rail} className="cinema mt-2">
-          {list.map((p, i) => (
+          {list.map((p) => (
             <button
               key={p.id}
               type="button"
@@ -99,14 +100,9 @@ export function Work() {
               onMouseMove={shine}
               className="neon-card flex min-h-[252px] flex-col rounded-[1.4rem] p-5 text-left"
             >
-              <div className="relative z-10 flex items-center justify-between gap-3">
-                <p className="font-mono text-[10px] tracking-[0.14em] text-cobalt uppercase">
-                  {p.kind}
-                </p>
-                <p className="font-mono text-[10px] text-mute/80">
-                  {String(i + 1).padStart(2, "0")}
-                </p>
-              </div>
+              <p className="relative z-10 font-mono text-[10px] tracking-[0.14em] text-cobalt uppercase">
+                {p.kind}
+              </p>
               <h3 className="relative z-10 mt-5 text-[1.18rem] leading-snug font-semibold tracking-tight">
                 {p.title}
               </h3>
@@ -151,13 +147,9 @@ export function Work() {
                   >
                     <X size={15} />
                   </button>
-                  <div className="relative flex items-center justify-between gap-4 pr-12">
-                    <p className="font-mono text-[10px] tracking-[0.18em] text-cobalt uppercase">{active.kind}</p>
-                    <p className="font-mono text-[10px] tracking-wide text-mute">
-                      {String(projects.findIndex((p) => p.id === active.id) + 1).padStart(2, "0")} /{" "}
-                      {String(projects.length).padStart(2, "0")}
-                    </p>
-                  </div>
+                  <p className="relative font-mono text-[10px] tracking-[0.18em] text-cobalt uppercase pr-12">
+                    {active.kind}
+                  </p>
                   <h3 className="relative mt-5 text-[2rem] leading-tight font-semibold tracking-tight">
                     {active.title}
                   </h3>

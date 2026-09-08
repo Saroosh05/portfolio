@@ -9,8 +9,8 @@ export function Research() {
         <FadeIn>
           <SectionHeader
             kicker="03 · Research"
-            title="AI and systems, with numbers"
-            intro="Crop disease at 85.28% accuracy. Parallel retrieval at 21.50× speedup. Download either paper as a PDF."
+            title="Applied research"
+            intro="Crop disease diagnosis and parallel information retrieval. Download either paper as a PDF."
           />
         </FadeIn>
         <div className="mt-8 grid gap-4 md:grid-cols-2">

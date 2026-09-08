@@ -8,14 +8,10 @@ const steps = [
   { no: "03", title: "I build, you review", copy: "You get a working product you can run and review." },
 ]
 
-function openMail(name: string, email: string, project: string, message: string) {
-  const subject = encodeURIComponent(`Project inquiry: ${project}`)
-  const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nProject: ${project}\n\n${message}`)
-  window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`
-}
+type Status = "idle" | "sending" | "sent" | "confirm" | "error"
 
 export function Contact() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "mail">("idle")
+  const [status, setStatus] = useState<Status>("idle")
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -29,36 +25,37 @@ export function Contact() {
     const message = String(data.get("message") || "").trim()
     setStatus("sending")
 
+    const payload = new FormData()
+    payload.append("name", name)
+    payload.append("email", email)
+    payload.append("project", project)
+    payload.append("message", message)
+    payload.append("_subject", `Project inquiry: ${project} (${name})`)
+    payload.append("_template", "table")
+    payload.append("_captcha", "false")
+    payload.append("_replyto", email)
+
     try {
       const res = await fetch(`https://formsubmit.co/ajax/${profile.email}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          project,
-          message,
-          _subject: `Project inquiry: ${project} (${name})`,
-          _template: "table",
-          _captcha: "false",
-          _replyto: email,
-        }),
+        headers: { Accept: "application/json" },
+        body: payload,
       })
-      const json = (await res.json()) as { success?: string | boolean }
-      if (json.success === "true" || json.success === true) {
+      const json = (await res.json()) as { success?: string | boolean; message?: string }
+      const ok = json.success === "true" || json.success === true
+      const note = (json.message || "").toLowerCase()
+      const needsConfirm =
+        note.includes("confirm") || note.includes("activate") || note.includes("inbox")
+
+      if (ok) {
         setStatus("sent")
         form.reset()
         return
       }
+      setStatus(needsConfirm ? "confirm" : "error")
     } catch {
-      /* mail app fallback */
+      setStatus("error")
     }
-
-    openMail(name, email, project, message)
-    setStatus("mail")
   }
 
   return (
@@ -104,9 +101,6 @@ export function Contact() {
                 <div className="absolute inset-0 bg-linear-to-br from-cyan-200/18 via-violet-400/10 to-transparent" />
                 <p className="relative kicker">Project inquiry</p>
                 <p className="relative mt-2 text-[1.2rem] font-semibold tracking-tight">Send a brief</p>
-                <p className="relative mt-1 text-sm text-mute">
-                  Delivered to {profile.email}
-                </p>
               </div>
               <div className="grid gap-5 p-6 md:grid-cols-2 md:p-8 md:pt-6">
                 <input
@@ -151,18 +145,22 @@ export function Contact() {
                     required
                     name="message"
                     rows={5}
-                    placeholder="What should it do, who is it for, and when do you need it?"
+                    placeholder="What should it do, who is it for, and when you need it?"
                     className="field resize-none"
                   />
                 </label>
-                {status === "sent" ? (
-                  <p className="text-sm text-cobalt md:col-span-2">
-                    Sent to {profile.email}. I’ll reply from that inbox.
+                {status === "confirm" ? (
+                  <p className="text-sm text-mute md:col-span-2">
+                    Check {profile.email} for a FormSubmit email, click Activate Form, then send again.
                   </p>
                 ) : null}
-                {status === "mail" ? (
+                {status === "error" ? (
                   <p className="text-sm text-mute md:col-span-2">
-                    Opening your mail app, addressed to {profile.email}.
+                    The form could not send. Email me at{" "}
+                    <a href={`mailto:${profile.email}`} className="text-cobalt underline-offset-2 hover:underline">
+                      {profile.email}
+                    </a>
+                    .
                   </p>
                 ) : null}
                 <button
@@ -174,9 +172,7 @@ export function Contact() {
                     ? "Sending…"
                     : status === "sent"
                       ? "Message sent"
-                      : status === "mail"
-                        ? "Opening mail…"
-                        : "Send project inquiry"}
+                      : "Send project inquiry"}
                 </button>
               </div>
             </form>
