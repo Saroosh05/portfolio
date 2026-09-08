@@ -9,6 +9,7 @@ type Item = {
   label: string
   hint: string
   group: "Jump" | "Work" | "Links"
+  download?: string
 }
 
 export function CommandPalette({
@@ -53,7 +54,7 @@ export function CommandPalette({
       { href: profile.github, label: "GitHub", hint: "External", group: "Links" },
       { href: profile.linkedin, label: "LinkedIn", hint: "External", group: "Links" },
       { href: `mailto:${profile.email}`, label: "Email", hint: "Mail", group: "Links" },
-      { href: profile.cv, label: "Download CV", hint: "PDF", group: "Links" },
+      { href: profile.cv, label: "Download CV", hint: "PDF", group: "Links", download: profile.cvFileName },
     ]
     return all.filter(
       (item) =>
@@ -146,6 +147,7 @@ export function CommandPalette({
                           <a
                             key={`${item.href}-${item.label}`}
                             href={item.href}
+                            download={item.download}
                             onClick={onClose}
                             onMouseEnter={() => setActive(i)}
                             className={cn(

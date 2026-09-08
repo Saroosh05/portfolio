@@ -100,7 +100,11 @@ export function Hero() {
             >
               View work
             </a>
-            <a href={profile.cv} download className="px-2 py-2.5 text-sm text-mute transition hover:text-ink">
+            <a
+              href={profile.cv}
+              download={profile.cvFileName}
+              className="px-2 py-2.5 text-sm text-mute transition hover:text-ink"
+            >
               Download CV
             </a>
           </div>

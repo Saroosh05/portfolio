@@ -13,6 +13,7 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/saroosh-javed-670414298",
   github: "https://github.com/Saroosh05",
   cv: "/Saroosh-Javed-CV.pdf",
+  cvFileName: "Saroosh-Javed-CV.pdf",
   languages: ["English", "Urdu"],
   availability: "Available for new projects",
   summary:
